@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <title>TAX INVOICE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            position:absolute;
+        }
+        #header {
+            text-align: center;
+            width: 100%;
+            background-color: #bbb;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .item-table {
+            width: fit-content;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .row-2 {
+            height: 110px; /* Set row height as a percentage of the table height */
+        }
+        .row-1 .row-3 .row-4 .row-5 {
+            height: 10%; /* Set row height as a percentage of the table height */
+        }
+        .item-table th, .item-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .item-table th {
+            background-color: #f2f2f2;
+        }
+        .wrapper{
+            display: flex;
+            width: fit-content;
+            box-sizing: border-box;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 25px;
+            padding-bottom: 40px;
+        }
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            width:100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+        .dropdown:hover .dropdown-content {display: block;}
+        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+        .main{}
+    </style>
+</head>
+<body>
+    <a href="/" style='float:top;'><button type='button'>BACK</button></a>
+    <center><label style="font-size: 40px;"><b>NS SOFTWARES BILLING SYSYTEM</b></label></center>
+    <div class="main" style="font-size: 20px;">
+        <div class="wrapper" id="main">
+            <div id='invoice'>
+                <table class="item-table">
+                    <tbody>
+                        <tr><td colspan="11"><center style="padding: 1%;"><head><label style="font-size: 30px;"><b>TAX INVOICE</b></label></head></center></td></tr>
+                        <tr>
+                            <td colspan="5" rowspan="4">
+                                <b><span id="company" name="company">{{cmpn}}</span></b>
+                                <br>
+                                <label id="cadd1">{{add1}}</label>
+                                <br>
+                                <label id="cadd2">{{add2}}</label>
+                                <br>
+                                <label id="cadd3">{{add3}}</label>
+                                <br>
+                                <label id="cgstn" style="white-space: pre-wrap;"><b>GSTIN/UIN</b>  : {{gstin}}</label>
+                                <br>
+                                <label id="cstnm" style="white-space: pre-wrap;"><b>State Name</b> : {{stn}}</label>
+                                <br>
+                                <label id="cstcd" style="white-space: pre-wrap;"><b>Code</b> : {{stc}}</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Invoice No.</b></label>
+                            <br>
+                            <input size="29" type="text" name="invno" id="invno">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Date</b></label>
+                            <br>
+                            <input size="29" type="text" name="date" id="date">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Delivery Note</b></label>
+                            <br>
+                            <input size="29" type="text" name="delnote" id="delnote">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Mode/Terms of Payment</b></label>
+                            <br>
+                            <input size="29" type="text" name="mot" id="mot">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Buyer's Order No. </b></label>
+                            <br>
+                            <input size="29" type="text" name="bon" id="bon">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Dated</b></label>
+                            <br>
+                            <input size="29" type="text" name="bond" id="bond">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" rowspan="4">
+                            <label><b>Consignee (Ship to)</b></label>
+                            <br>
+                            <textarea id="shipadd" name="shipadd" rows="4" cols="40"></textarea>
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>GSTIN/UIN</b>  : </label><input type="text" id="sgstin" size="23">
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>State Name</b> : </label><input type="text" id="sstnam" size="18">
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>State Code</b>  : </label><input type="text" id="sstcod" size="1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Dispatch Doc No</b></label>
+                            <br>
+                            <input size="29" type="text" name="ddocn" id="ddocn">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Delivery Note Date</b></label>
+                            <br>
+                            <input size="29" type="text" name="delnd" id="delnd">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Dispatched through</b></label>
+                            <br>
+                            <input size="29" type="text" name="dispthr" id="dispthr">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Destination</b></label>
+                            <br>
+                            <input size="29" type="text" name="dest" id="dest">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                            <label><b>Bill of Lading/LR-RR No.</b></label>
+                            <br>
+                            <input size="29" type="text" name="bol" id="bol">
+                            </td>
+                            <td colspan="3">
+                            <label><b>Motor Vehicle No.</b></label>
+                            <br>
+                            <input size="29" type="text" name="mvno" id="mvno">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" rowspan="2">
+                            <label><b>Buyer (Bill to)</b></label>
+                            <br>
+                            <textarea id="billadd" name="billadd" rows="4" cols="40"></textarea>
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>GSTIN/UIN</b>  : </label><input type="text" id="bgstin" size="23">
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>State Name</b> : </label><input type="text" id="bstnam" size="18">
+                            <br>
+                            <label style="white-space: pre-wrap;"><b>State Code</b>  : </label><input type="text" id="bstcod" size="1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" rowspan="1">
+                            <label><b>Terms of Delivery</b></label>
+                            <br>
+                            <textarea id="tod" name="tod" rows="9" cols="63"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><div  style ="text-align:center;"><label><b>Sl</b></label><br><label><b>No.</b></label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><label><b>ITEM/DESCRIPTION</b></label></div></td>
+                            <td><div style ="text-align:center;"><label><b>HSN</b></label></div></td>
+                            <td><div style ="text-align:center;"><label><b>QTY</b></label></div></td>
+                            <td><div style ="text-align:center;"><label><b>RATE</b></label></div></td>
+                            <td><div style ="text-align:center;"><label><b>UOM</b></label></div></td>
+                            <td colspan="2"><div style ="text-align:center;"><label><b>AMOUNT</b></label></div></td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td><div style ="text-align:center;"><label>1.</label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><input type="text" name="item1" size="33" id="item1"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="hsn1" size="2" id="hsn1" ></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="qty1" size="5" id="qty1"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="rte1" size="2" id="rte1"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="uom1" size="1" id="uom1"></div></td>
+                            <td colspan="2"><div style ="text-align:center;"><input type="text" name="amt1" size="17" id="amt1"></div></td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td><div style ="text-align:center;"><label>2.</label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><input type="text" name="item2" size="33" id="item2"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="hsn2" size="2" id="hsn2"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="qty2" size="5" id="qty2"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="rte2" size="2" id="rte2"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="uom2" size="1" id="uom2"></div></td>
+                            <td colspan="2"><div  style ="text-align:center;"><input type="text" name="amt2" size="17" id="amt2"></div></td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td><div style ="text-align:center;"><label>3.</label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><input type="text" name="item3" size="33" id="item3"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="hsn3" size="2" id="hsn3"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="qty3" size="5" id="qty3"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="rte3" size="1" id="rte3"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="uom3" size="1" id="uom3"></div></td>
+                            <td colspan="2"><div style ="text-align:center;"><input type="text" name="amt3" size="17" id="amt3"></div></td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td><div style ="text-align:center;"><label>4.</label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><input type="text" name="item4" size="33" id="item4"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="hsn4" size="2" id="hsn4"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="qty4" size="5" id="qty4"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="rte4" size="1" id="rte4"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="uom4" size="1" id="uom4"></div></td>
+                            <td colspan="2"><div style ="text-align:center;"><input type="text" name="amt4" size="17" id="amt4"></div></td>
+                        </tr>
+                        <tr style="text-align: center;">
+                            <td><div style ="text-align:center;"><label>5.</label></div></td>
+                            <td colspan="4"><div style ="text-align:center;"><input type="text" name="item5" size="33" id="item5"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="hsn5" size="2" id="hsn5"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="qty5" size="5" id="qty5"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="rte5" size="1" id="rte5"></div></td>
+                            <td><div style ="text-align:center;"><input type="text" name="uom5" size="1" id="uom5"></div></td>
+                            <td colspan="2"><div style ="text-align:center;"><input type="text" name="amt5" size="17" id="amt5"></div></td>
+                        </tr>
+                        <tr>
+                            <td colspan="9"><div style="text-align: right;"><label><b>TOTAL</b></label></div></td>
+                            <td colspan="2"><div style="text-align: center;"><span name="amt6" id="amt6"></span></div></td>
+                        </tr>
+                        <tr>
+                            <td colspan="10"><label>Amount Chargeable (in words)</label></td>
+                        </tr>
+                        <tr style="border-top:none;">
+                            <td colspan="10"><label name="amtw" id="amtw">-</label></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5"><label><b>TAXES</b></label></td>
+                            <td colspan="6" rowspan="5" style="text-align:center;">
+                                <div class="dropdown" style="width:80%;">
+                                    <table style="width:100%;">
+                                        <tr>
+                                            <th style="width:20%;">BANK</th>
+                                            <td style="width:80%;"><span id="bank"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>BRANCH</th>
+                                            <td><span id="branch"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>A/c No.</th>
+                                            <td><span id="a/cno"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <th>IFSC</th>
+                                            <td><span id="ifscd"></span></td>
+                                        </tr>
+                                    </table>
+                                    <div class="dropdown-content" id="acsd">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                            <label><b>CGST</b></label>
+                            <input type="text" name="cgstp" id="cgstp" size="1">
+                            <label>%</label>
+                            <span name="cgst" id="cgst"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                            <label><b>SGST</b></label>
+                            <input type="text" name="sgstp" id="sgstp" size="1">
+                            <label>%</label>
+                            <span name="sgst" id="sgst"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                            <label style="white-space: pre-wrap;"> <b>IGST</b></label>
+                            <input type="text" name="igstp" id="igstp" size="1">
+                            <label>%</label>
+                            <span name="igst" id="igst"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                            <label><b>TOTAL</b></label>
+                            <span name="invt" id="invt"> </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">
+                            <label style="font-size: 10pt;"><b><u>DECLARATION</u></b></label>
+                            <br>
+                            <label style="font-size: 10pt;">We declare that this invoice shows the actual price of the<br>goods described and that all particular are true and correct.</label>
+                            </td>
+                            <td colspan="5" style="justify-content: right;">
+                            <div style="text-align: right;">
+                                <label>for </label>
+                                <label><b>{{cmpn}}</b></span>
+                                <br>
+                                <br>
+                                <label>Authorised Signatory</label>
+                            </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="manageh" style="margin-left: 20px; width:50%;">
+                <div id="managec" width="100%" style="border: 1px;">
+                    <center style="padding: 1%;"><head><label style="font-size: 30px;"><b>ADDRESS BOOK</b></label></head></center>
+                    <table id="addbook" border="1px" style="cursor: pointer; display: block; border: 1px solid rgb(0, 0, 0); height: 361px; overflow-y: scroll;" width=100%>
+                        <thead>
+                            <th><b>Sl<br>No.</b></th>
+                            <th><b>COMPANY</b></th>
+                            <th><b>ADDRESS</b></th>
+                            <th><b>GSTIN</b></th>
+                            <th><b>STATE NAME</b></th>
+                        </thead>
+                        <tbody id="addbody" align='center'>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 20px;">
+                        <table border="1px" style="height: 60%; width:100%" class='item-table'>
+                            <tr class="row-1">
+                                <th width=20%><b>COMPANY</b></th>
+                                <td width=40%><span id="dnme"> </span></td>
+                                <td rowspan="4" style="justify-content: center;">
+                                    <table style="justify-content: center; height:100%; border:0px;">
+                                        <tr>
+                                            <td style="border:0px; width: 50%;"><button style="font-size: 17px;" type="button" onclick="sset()"><b>SET<br>SHIPPING ADDRESS</b></button></td>
+                                            <td style="border:0px; width: 50%;"><button style="font-size: 17px;" type="button" onclick="bset()"><b>SET<br>BILLING ADDRESS</b></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:0px;" align='center'><button type="button" id="snewb" style="width: 100%; height: 100%; font-size: 17px;" onclick="snew()"><b>ADD CONSIGNEE</b></button></td>
+                                            <td style="border:0px;" align='center'><button type="button" id="bnewb" style="width: 100%; height: 100%; font-size: 17px;" onclick="bnew()"><b>ADD<br>BUYER</b></button></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr class="row-2">
+                                <th><b>ADDRESS</b></th>
+                                <td><span id="dadd"> </span></td>
+                            </tr>
+                            <tr class="row-3">
+                                <th><b>GSTIN</b></th>
+                                <td><span id="dgst"> </span></td>
+                            </tr>
+                            <tr class="row-4">
+                                <th><b>STATE NAME</b></th>
+                                <td><span id="dstn"> </span></td>
+                            </tr>
+                            <tr class="row-5" style="border:0px;">
+                                <td colspan="3">
+                                    <table style="justify-content: center; height:100%; width:100%; border:0px;">
+                                        <tr>
+                                            <td style="border:0px; width: 50%;"><center><button type="button" style="width: 100%; height: 100%; font-size: 17px;" id="clear"><b>CLEAR<br>FORM</b></button></center></td>
+                                            <td style="border:0px; width: 50%;"><center><button type="buuton" style="width: 100%; height: 100%; font-size: 17px;" id="creat"><b>CREATE<br>BILL</b></button></center></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var name='';
+        var addr='';
+        var gstn='';
+        var stnm='';
+        var stcd='';
+
+        var bnkn='';
+        var bnbr='';
+        var acno='';
+        var ifsc='';
+        
+        function clear(){
+            name='';addr='';gstn='';stnm='';stcd='';bnkn='';bnbr='';acno='';ifsc='';
+            document.getElementById('dnme').innerHTML='-';
+            document.getElementById('dadd').innerHTML='-';
+            document.getElementById('dgst').innerHTML='-';
+            document.getElementById('dstn').innerHTML='-';
+    
+            add_disp();
+            acs_disp();
+
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            var dt='';
+            if (dd<10){dt+='0'}
+            dt+=dd + '/';
+            if (mm<10){dt+='0'}
+            dt+=mm + '/' + yyyy;
+            document.getElementById('date').value=dt;
+
+            var list=['amtw','cgst','sgst','igst','invt'];
+            for (let i=0;i<list.length;i++){document.getElementById(list[i]).innerHTML='-';}
+
+            gtinvno();
+
+            var v=['delnote','mot','bon','bond','shipadd','sgstin','sstnam','sstcod','ddocn','delnd','dispthr','dest','bol','mvno','billadd','bgstin','bstnam','bstcod','tod',]
+            var vg=['gstp','item','hsn','qty','rte','uom','amt',]
+            var il=['bank','branch','a/cno','ifscd','invt','amt6','amtw',]
+            var ig=['gst',]
+
+            for (let i=0;i<v.length;i++){document.getElementById(v[i]).value='';}
+            for (let i=0;i<vg.length;i++){
+                if (i>0){for (let j=1;j<6;j++){document.getElementById(vg[i]+j).value='';}}
+                else{
+                    var g='csi';
+                    for (let j=0;j<3;j++){document.getElementById(g[j]+vg[i]).value='';}
+                }
+            }
+
+            for (let i=0;i<il.length;i++){document.getElementById(il[i]).innerHTML='-';}
+            for (let i=0;i<ig.length;i++){
+                var g='csi';
+                for (let j=0;j<3;j++){document.getElementById(g[j]+ig[i]).innerHTML='-';}
+            }
+        }
+
+        document.getElementById('clear').onclick=clear;
+        document.getElementById('creat').onclick=submt;
+
+        function gtinvno(){
+            $.ajax({
+                url: "/sales/get_invno/"+document.getElementById('company').innerHTML,
+                type: "GET",
+                success: function(data) {
+                    document.getElementById('invno').value=data[0]['invno'];
+                }
+            });
+        }
+               
+        function sset(){
+        	var tempDiv = document.createElement("div");
+            tempDiv.innerHTML =  name;
+			var  nme = tempDiv.textContent || tempDiv.innerText || "";
+            document.getElementById('shipadd').value=nme+'\n'+addr;
+            document.getElementById('sgstin').value=gstn;
+            document.getElementById('sstnam').value=stnm;
+            document.getElementById('sstcod').value=stcd;
+        fetch('/sbill', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({data: document.getElementById('shipadd').value}),
+            })
+        }
+
+        function snew(){
+            var cname=split2(document.getElementById('shipadd').value)['ind1'];
+            var addrs=split2(document.getElementById('shipadd').value)['ind2'];
+            var gstin=document.getElementById('sgstin').value;
+            var stnam=document.getElementById('sstnam').value;
+            var stcod=document.getElementById('sstcod').value;
+            var  info='Consignee';
+            $.ajax({
+                type: 'POST',
+                url: '/snew',
+                contentType: 'application/json',
+                data: JSON.stringify({cname:cname,addrs:addrs,gstin:gstin,stnam:stnam,stcod:stcod,info:info}),
+                success: function(response) {
+                    alert(response.message);
+                    console.log(response.data);
+                    add_disp();
+                }
+            });
+        }
+
+        function bnew(){
+            var cname=split2(document.getElementById('billadd').value)['ind1'];
+            var addrs=split2(document.getElementById('billadd').value)['ind2'];
+            var gstin=document.getElementById('bgstin').value;
+            var stnam=document.getElementById('bstnam').value;
+            var stcod=document.getElementById('bstcod').value;
+            var  info='Buyer';
+            $.ajax({
+                type: 'POST',
+                url: '/bnew',
+                contentType: 'application/json',
+                data: JSON.stringify({cname:cname,addrs:addrs,gstin:gstin,stnam:stnam,stcod:stcod,info:info}),
+                success: function(response) {
+                    alert(response.message);
+                    console.log(response.data);
+                    add_disp();
+                }
+            });
+        }
+
+        function split2(str) {
+            const parts = str.split('\n');
+            const firstPart = parts[0];
+            const restPart = parts.slice(1).join('\n');
+            return {ind1: firstPart,ind2: restPart};
+        }
+
+        function bset(){
+            document.getElementById('billadd').value=name+'\n'+addr;
+            document.getElementById('bgstin').value=gstn;
+            document.getElementById('bstnam').value=stnm;
+            document.getElementById('bstcod').value=stcd;
+        }
+
+        function bnkset(){
+            document.getElementById('bank').value=bnkn;
+            document.getElementById('branch').value=bnbr;
+            document.getElementById('a/cno').value=acno;
+            document.getElementById('ifscd').value=ifsc;
+        }
+        
+        function submt(){
+            var v=['cadd1','cadd2','cadd3'];
+            var cadd='';
+            for (let i=0;i<v.length;i++){
+                cadd+=document.getElementById(v[i]).innerHTML.replace('<b>','').replace('</b>','');
+                if (i!=v.length-1){cadd+='\n';}
+            }
+            
+            var v=['invno','date','delnote','mot','bon','bond','shipadd','sgstin','sstnam','sstcod','ddocn','delnd','dispthr','dest','bol','mvno','billadd','bgstin','bstnam','bstcod','tod',]
+            var vg=['gstp']
+            var itd=['item','hsn','qty','rte','uom','amt',]
+            var il=['bank','branch','a/cno','ifscd','invt','amt6','amtw',]
+            var ig=['gst',]
+            var d={}
+
+            d['compn']=document.getElementById('company').innerHTML.replace('<b>','').replace('</b>','');
+            d['caddr']=document.getElementById('company').innerHTML.replace('<b>','').replace('</b>','')+'\n'+cadd;
+            d['cgstn']=document.getElementById('cgstn').innerHTML.replace('<b>GSTIN/UIN</b>  : ','');
+            d['cstnm']=document.getElementById('cstnm').innerHTML.replace('<b>State Name</b> : ','');
+            d['cstcd']=document.getElementById('cstcd').innerHTML.replace('<b>Code</b> : ','');
+
+            for (let i=0;i<v.length;i++){d[v[i]]=document.getElementById(v[i]).value;}
+            for (let i=0;i<vg.length;i++){
+                var g='csi';
+                for (let j=0;j<3;j++){d[g[j]+vg[i]]=document.getElementById(g[j]+vg[i]).value;}
+            }
+            
+            for (let j=1;j<6;j++){
+            	let f1=0;
+            	let f2=0;
+            	for (let i=0;i<itd.length;i++){if (document.getElementById(itd[i]+j).value==''){f1=1;}}
+            	for (let i=0;i<itd.length;i++){if (document.getElementById(itd[i]+j).value!=''){f2=1;}}
+            	if (f1 && f2){alert('Enter all details for item no. '+j);return;}
+            	for (let i=0;i<itd.length;i++){d[itd[i]+j]=document.getElementById(itd[i]+j).value;}
+            }
+
+            for (let i=0;i<il.length;i++){d[il[i]]=document.getElementById(il[i]).innerHTML;}
+            for (let i=0;i<ig.length;i++){
+                var g='csi';
+                for (let j=0;j<3;j++){d[g[j]+ig[i]]=document.getElementById(g[j]+ig[i]).innerHTML;}
+            }
+            
+            console.log(d);
+            $.ajax({
+                type: 'POST',
+                url: '/sales/bill',
+                contentType: 'application/json',
+                data: JSON.stringify(d),
+                success: function(response) {
+                    alert(response.message);
+                    console.log(response.data);
+                    add_disp();
+                }
+            });
+        }
+
+        function calculate(){
+            let int=0;
+            for (let i=1;i<=5;i++){
+            if (document.getElementById('amt'+i).value!=''){int+=parseInt(document.getElementById('amt'+i).value);}
+            else{int+=0;}
+            }
+            if (int>0){document.getElementById('amt6').innerHTML=int.toString();}
+            else{document.getElementById('amt6').innerHTML='';}
+            gsteval();
+        }
+        
+        function eval(){
+            for (let i=1;i<=5;i++){
+                if (document.getElementById('rte'+i.toString()).value!='' && document.getElementById('rte'+i.toString()).value!=''){
+                    document.getElementById('amt'+i).value=document.getElementById('rte'+i).value*document.getElementById('qty'+i).value;
+                }
+                else{document.getElementById('amt'+i).value=''}
+            }
+            calculate();
+        }
+        
+        function gsteval(){
+            if (document.getElementById('amt6').innerHTML!=''){var amt=parseInt(document.getElementById('amt6').innerHTML);}
+            else{
+                document.getElementById('invt').innerHTML='-';
+                document.getElementById('amtw').innerHTML='-';
+                return;
+            }
+            var tot=amt;
+            var gst="csi";
+            for (let i=0;i<3;i++){
+                if (document.getElementById(gst[i]+'gstp').value!='' && document.getElementById(gst[i]+'gstp').value!='-'){
+                    document.getElementById(gst[i]+'gst').innerHTML=(parseFloat(document.getElementById(gst[i]+'gstp').value)*amt/100).toString();
+                    tot+=parseFloat(document.getElementById(gst[i]+'gst').innerHTML);
+                }
+                else{
+                    tot+=0;
+                    document.getElementById(gst[i]+'gstp').value='';
+                    document.getElementById(gst[i]+'gst').innerHTML='-';
+                }
+            }
+            document.getElementById('invt').innerHTML=tot.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }).replace('₹','').replace('.00','');
+            document.getElementById('amtw').innerHTML=inWords(tot);
+        }
+        
+        
+        function inWords (num) {
+            var a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+            var b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+            if ((num = num.toString()).length > 9) return 'overflow';
+            n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+            if (!n) return; var str = '';
+            str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+            str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+            str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+            str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+            str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Rupees Only' : '';
+            if (str.slice(str.length-11,str.length)!='Rupees Only'){str+='Rupees Only';}
+            return str;
+        }
+        
+        for (let i=1;i<6;i++){
+            document.getElementById('amt'+i).addEventListener('input',calculate);
+            document.getElementById('rte'+i.toString()).addEventListener('input',eval);
+            document.getElementById('qty'+i.toString()).addEventListener('input',eval);
+        }
+        var gst="csi";
+        for (let i=0;i<3;i++){document.getElementById(gst[i]+'gstp').addEventListener('input',gsteval);}
+        
+        $(document).ready(function() {
+            add_disp();
+            acs_disp();
+            clear();
+        });
+
+        function add_disp() {
+            $.ajax({
+                url: "/sales/get_add",
+                type: "GET",
+                success: function(data) {
+                    $("#addbody").empty();
+                    $.each(data, function(index, item){$("#addbody").append("<tr><td>" + item.sno + "</td><td>" + item.comp + "</td><td>" + item.add.replace('\n','&#13;') + "</td><td>" + item.gst + "</td><td>" + item.stnc + "</td></tr>");}
+                    );
+                    setadd();
+                }
+            });
+        }
+
+        function acs_disp() {
+            $.ajax({
+                url: "/sales/get_acs",
+                type: "GET",
+                success: function(data) {
+                    $("#acsd").empty();
+                    $.each(data, function(index, item){$("#acsd").append('<button type="button" style="font-size: 20px;" onclick="'+"setacs('"+item.bnk+"','"+item.bnb+"','"+item.acn+"','"+item.ifc+"')"+'">'+item.acn+"</button><br>");});
+                    document.getElementById('bank').innerHTML='-';
+                    document.getElementById('branch').innerHTML='-';
+                    document.getElementById('a/cno').innerHTML='-';
+                    document.getElementById('ifscd').innerHTML='-';
+                }
+            });
+        }
+        
+        function setadd(){
+            var table = document.getElementById("addbook");
+            if (table){for(var i=0;i<table.rows.length;i++){table.rows[i].onclick = function(){getadd(this);};};}
+        }
+
+        function setacs(bnk,bnb,acn,ifc){
+            document.getElementById('bank').innerHTML=bnk;
+            document.getElementById('branch').innerHTML=bnb;
+            document.getElementById('a/cno').innerHTML=acn;
+            document.getElementById('ifscd').innerHTML=ifc;
+        }
+        
+        function getadd(tableRow) {
+            name = tableRow.childNodes[1].innerHTML;
+            addr = tableRow.childNodes[2].innerHTML;
+            gstn = tableRow.childNodes[3].innerHTML;
+            stnm = tableRow.childNodes[4].innerHTML.slice(0,tableRow.childNodes[4].innerHTML.length-tableRow.childNodes[4].innerHTML.split(" ").reverse()[0].length-1);
+            stcd = tableRow.childNodes[4].innerHTML.split(" ").reverse()[0];
+            document.getElementById('dnme').innerHTML=name;
+            document.getElementById('dadd').innerHTML=addr;
+            document.getElementById('dgst').innerHTML=gstn;
+            document.getElementById('dstn').innerHTML=stnm+', '+stcd;
+        }
+
+        function getacs(tableRow) {
+            bnkn = tableRow.childNodes[1].innerHTML;
+            bnbr = tableRow.childNodes[2].innerHTML;
+            acno = tableRow.childNodes[3].innerHTML;
+            ifsc = tableRow.childNodes[4].innerHTML;
+            document.getElementById('dbnk').innerHTML=bnkn;
+            document.getElementById('dbnb').innerHTML=bnbr;
+            document.getElementById('dacn').innerHTML=acno;
+            document.getElementById('difc').innerHTML=ifsc;
+        }
+
+        function movePosition(){
+            var $main    = document.getElementById("main");
+            var $invoice = document.getElementById("invoice");
+            var $manageh = document.getElementById("manageh");
+            var $managec = document.getElementById("managec");
+            
+            var $windowWidth = document.documentElement.clientWidth;
+
+            if($windowWidth <=1000){$invoice.appendChild($managec);}
+            else {$manageh.appendChild($managec);}
+        }
+
+        var domReady = function(callback) {document.readyState === "interactive" || document.readyState === "complete" ? callback() : document.addEventListener("DOMContentLoaded", callback);};
+        domReady(function() {movePosition()});
+        window.onresize = function(event) {movePosition();};
+    </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <title>ACCOUNTS MANAGEMENT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            position:absolute;
+            background-color: #fff;
+            box-sizing: border-box;
+            width:100%;
+        }
+        #header {
+            text-align: center;
+            width: 100%;
+            background-color: #bbb;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .item-table {
+            width: fit-content;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .custom-tr{
+            height: 50px;
+        }
+        .col-1 {
+            width: 2%;
+        }
+        .col-2 {
+            width: 10%;
+        }
+        .col-3 {
+            width: 20%;
+        }
+        .col-4 {
+            width: 3%;
+        }
+        .col-5 {
+            width: 8%;
+        }
+        .item-table th {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .item-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        #no-top-bd {
+            border-top: none;
+            border-bottom: none;
+        }
+        .item-table th {
+            background-color: #f2f2f2;
+        }
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+          
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+        .dropdown:hover .dropdown-content {display: block;}
+        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+        .main{
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 25px;
+            padding-bottom: 40px;
+        }
+        .wrapper{
+            display: flex;
+            width: fit-content;
+            box-sizing: border-box;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 25px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" style='float:top;'><button type='button'>BACK</button></a>
+    <center><label style="font-size: 40px;"><b>NS SOFTWARES BILLING SYSYTEM</b></label></center>
+    <br>
+    <center><label style="font-size: 35px;"><b>ACCOUNTS MANAGEMENT</b></label></center>
+    <div class="main">
+        <div id='address' style="height:60%;">
+            <table id="acsbook" border="1px" style="cursor: pointer; display: block; border: 1px solid rgb(0, 0, 0); height: 361px; overflow-y: scroll;">
+                <thead>
+                    <th class="col-1"><b>Sl<br>No.</b></th>
+                    <th class="col-2"><b>A/C No.</b></th>
+                    <th class="col-3"><b>BANK</b></th>
+                    <th class="col-4"><b>BRANCH</b></th>
+                    <th class="col-5"><b>IFSC CODE</b></th>
+                </thead>
+                <tbody id="acsbody" align='center'>
+                </tbody>
+            </table>
+        </div>
+        <div id="manageh" style="width:100%; height:40%;">
+            <div style="margin-top: 20px;">
+                <table border="1px" style="height: 60%; width:100%;" class='item-table'>
+                    <tr>
+                        <th width=20%><b>A/C No.</b></th>
+                        <td width=80%><input id="dbnk" style="width:100%;"></td>
+                    </tr>
+                    <tr>
+                        <th><b>BANK</b></th>
+                        <td><input id="dbnb" style="width:100%;"></td>
+                    </tr>
+                    <tr>
+                        <th><b>BRANCH</b></th>
+                        <td><input id="dacn" style="width:100%;"></td>
+                    </tr>
+                    <tr>
+                        <th><b>IFSC</b></th>
+                        <td><input id="difc" style="width:100%;"></td>
+                    </tr>
+                    <tr style="border:0px; justify-content:center;">
+                        <td colspan="3">
+                            <table style="justify-content: center; height:100%; width:100%; border:0px;">
+                                <tr>
+                                    <td style="border:0px; width: 25%;"><center><button type="button" style="width: 100%; height: 100%; font-size: 17px;" id="add"><b>ADD</b></button></center></td>
+                                    <td style="border:0px; width: 25%;"><center><button type="button" style="width: 100%; height: 100%; font-size: 17px;" id="upd"><b>UPDATE</b></button></center></td>
+                                    <td style="border:0px; width: 25%;"><center><button type="button" style="width: 100%; height: 100%; font-size: 17px;" id="del"><b>DELETE</b></button></center></td>
+                                    <td style="border:0px; width: 25%;"><center><button type="button" style="width: 100%; height: 100%; font-size: 17px;" id="clr"><b>CLEAR</b></button></center></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        
+        var sno='None';
+
+        function clr(){
+            sno='None';
+            var vals=['dbnk','dbnb','dacn','difc'];
+            for (let i=0;i<5;i++){document.getElementById(vals[i]).value='';}
+        }
+
+        function add(){
+            var vals=['dbnk','dbnb','dacn','difc'];
+            for (let i=0;i<5;i++){
+                if (document.getElementById(vals[i]).value==''){alert('Enter All Details!');return;}
+            }
+            var bnk = document.getElementById('dbnk').value;
+            var bnb = document.getElementById('dbnb').value;
+            var acn = document.getElementById('dacn').value;
+            var ifc = document.getElementById('difc').value;
+            $.ajax({
+                type: 'POST',
+                url: '/acs/add',
+                contentType: 'application/json',
+                data: JSON.stringify({bnk:bnk,bnb:bnb,acn:acn,ifc:ifc}),
+                success: function(response) {
+                    alert(response.message);
+                    console.log(response.data);
+                    if (response.message=='Account Added Successfully!'){
+                        acs_disp();
+                        clr();
+                    }
+                }
+            });
+        }
+
+        function upd(){
+            if (sno!='None'){
+                var vals=['dbnk','dbnb','dacn','difc'];
+                for (let i=0;i<5;i++){
+                    if (document.getElementById(vals[i]).value==''){alert('Enter All Details!');return;}
+                }
+                var bnk = document.getElementById('dbnk').value;
+                var bnb = document.getElementById('dbnb').value;
+                var acn = document.getElementById('dacn').value;
+                var ifc = document.getElementById('difc').value;
+                $.ajax({
+                    type: 'POST',
+                    url: '/acs/upd',
+                    contentType: 'application/json',
+                    data: JSON.stringify({sno:sno,bnk:bnk,bnb:bnb,acn:acn,ifc:ifc}),
+                    success: function(response) {
+                        alert(response.message);
+                        console.log(response.data);
+                        if (response.message=='Account Details Updated Successfully!'){
+                            acs_disp();
+                            clr();
+                        }
+                    }
+                });
+            }
+        }
+
+        function del(){
+            if (sno!='None'){
+                $.ajax({
+                    type: 'POST',
+                    url: '/acs/del',
+                    contentType: 'application/json',
+                    data: JSON.stringify({sno:sno}),
+                    success: function(response) {
+                        alert(response.message);
+                        console.log(response.data);
+                        acs_disp();
+                        clr();
+                    }
+                });
+            }
+        }
+
+        document.getElementById('clr').onclick = clr;
+        document.getElementById('add').onclick = add;
+        document.getElementById('upd').onclick = upd;
+        document.getElementById('del').onclick = del;
+
+        $(document).ready(function() {
+            acs_disp();
+            clr();
+        });
+
+        function acs_disp() {
+            $.ajax({
+                url: "/acs/get_acs",
+                type: "GET",
+                success: function(data) {
+                    $("#acsbody").empty();
+                    $.each(data, function(index, item){$("#acsbody").append("<tr class='custom-tr'><td>" + item.sno + "</td><td>" + item.acn + "</td><td>" + item.bnk + "</td><td>" + item.bnb + "</td><td>" + item.ifc + "</td></tr>");});
+                    setadd();
+                }
+            });
+        }
+
+        function setadd(){
+            var table = document.getElementById("acsbook");
+            if (table){for(var i=0;i<table.rows.length;i++){table.rows[i].onclick = function(){getadd(this);};};}
+        }
+
+        function getadd(tableRow) {
+            sno                                   = tableRow.childNodes[0].innerHTML;
+            document.getElementById('dacn').value = tableRow.childNodes[1].innerHTML;
+            document.getElementById('dbnk').value = tableRow.childNodes[2].innerHTML;
+            document.getElementById('dbnb').value = tableRow.childNodes[3].innerHTML;
+            document.getElementById('difc').value = tableRow.childNodes[4].innerHTML;
+        }        
+    </script>
+</body>
+</html>

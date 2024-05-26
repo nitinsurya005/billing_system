@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>NS SOFTWARES BILLING SYSYTEM</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            position:absolute;
+            width: 100%;
+            margin:0px;
+        }
+        #header {
+            text-align: center;
+            width: 100%;
+            background-color: #bbb;
+        }
+        .invoice-details {
+            margin-bottom: 20px;
+        }
+        .item-table {
+            width: fit-content;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .item-table th, .item-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .item-table th {
+            background-color: #f2f2f2;
+        }
+        .wrapper{
+            display: flex;
+            width: fit-content;
+            box-sizing: border-box;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 25px;
+            padding-bottom: 40px;
+        }
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+          
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-content a:hover {background-color: #f1f1f1;}
+        
+        .dropdown:hover .dropdown-content {display: block;}
+        
+        .dropdown:hover .dropbtn {background-color: #3e8e41;}
+        .main{
+            padding:20px
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div class="main" style='justify-content:center;' id="main">
+            <div>
+                <label style="font-size: 45px; float:center"><b>NS SOFTWARES BILLING SYSYTEM</b></label>
+            </div>
+            <br>
+            <div id="cmpd" style="background-color:rgb(229,229,229);">
+                <label style="font-size: 30px; width:100%; margin-top:20px;"><b>CURRENTLY SELECTED RC:</b></label>
+                <br>
+                <span style="font-size: 30px; width:100%; margin-top:20px;" id="cmp">-</span>
+            </div>
+            <div class="dropdown" id="dropdown">
+                <button type="button" style="font-size: 30px; width:100%; margin-top:20px;"><b>SELECT COMPANY</b></button>
+                <div class="dropdown-content" id="cmps">
+                    <button type="button" style="font-size: 20px;" onclick="setcmp('SRT TRADERS')">SRT TRADERS</button><br>
+                </div>
+            </div>
+            <br>
+            <a href="/sales" id="sales" onclick="check()"><button style="font-size: 30px; width:100%; margin-top:20px;" id='slsb' type='button'><b>SALES BILL</b></button></a>
+            <br>
+            <a href="/purchase" id="purchase" onclick="check()"><button style="font-size: 30px; width:100%; margin-top:20px;" id='purb' type='button'><b>PURCHASE VOUCHER</b></button></a>
+            <br>
+            <a href="/manage_address" id="manage_address"><button style="font-size: 30px; width:100%; margin-top:20px;" id='mnab' type='button'><b>MANAGE ADDRESSES</b></button></a>
+            <br>
+            <a href="/cmps" id="cmpsb"><button style="font-size: 30px; width:100%; margin-top:20px;" id='cmpb' type='button'><b>MANAGE COMPANIES</b></button></a>
+            <br>
+            <a href="/acs" id="acs"><button style="font-size: 30px; width:100%; margin-top:20px;" id='acsb' type='button'><b>MANAGE ACCOUNTS</b></button></a>
+        </div>
+    </center>
+
+    <script>
+        document.getElementById('dropdown').addEventListener('mouseenter', function() {
+            var content = document.getElementById('content');
+            content.style.display = 'block';
+        });
+        
+        document.getElementById('dropdown').addEventListener('mouseleave', function() {
+            var content = document.getElementById('content');
+            content.style.display = 'none';
+        });
+
+        function get_cmps(){
+            $.ajax({
+                url: "/home/get_cmps/1",
+                type: "GET",
+                success: function(data) {
+                    $("#cmps").empty();
+                    $.each(data, function(index, item){$("#cmps").append('<button type="button" style="font-size: 20px;" onclick="'+"setcmp('"+item.name+"')"+'">'+item.name+"</button><br>");});
+                }
+            });
+        }
+
+        function check(){
+            if (document.getElementById('cmp').innerHTML=='-'){
+                alert("First Select a Company!")
+                event.preventDefault();
+            }
+        }
+
+        function setcmp(name){
+            document.getElementById('cmp').innerHTML=name;
+            document.getElementById('sales').href='/sales/'+name;
+            document.getElementById('purchase').href='/purchase/'+name;
+        }
+
+        let fl1=1;
+        let fl2=0;
+        function movePosition(){
+            var els = ['slsb','purb','mnab','cmpb','acsb','dropdown','cmpd'];
+            
+            var $windowWidth = document.documentElement.clientWidth;
+            
+            if($windowWidth <=1000){
+                for (let i=0;i<els.length;i++){document.getElementById(els[i]).style.width="100%";}
+            }
+            else {
+                for (let i=0;i<els.length;i++){document.getElementById(els[i]).style.width="50%";}
+            }
+        }
+
+        var domReady = function(callback) {document.readyState === "interactive" || document.readyState === "complete" ? callback() : document.addEventListener("DOMContentLoaded", callback);};
+
+        domReady(function() {movePosition()});
+
+        window.onresize = function(event) {movePosition();};
+
+        /*const fsi = {{fs}};
+
+        function resize(){
+            $('*').each(function() {
+                var currentSize = parseInt($(this).css('font-size'));
+                var newSize = currentSize + fsi;
+                $(this).css('font-size', newSize + 'px');
+            });
+        }
+        
+        resize();*/
+        get_cmps();
+
+    </script>
+</body>
+</html>
